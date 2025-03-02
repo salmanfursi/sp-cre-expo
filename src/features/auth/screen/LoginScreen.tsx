@@ -16,7 +16,6 @@ const LoginScreen=({ navigation })=> {
       Alert.alert('Error', 'Please enter both email and password')
       return
     }
-
     try {
       // Log email and password
       console.log('Login attempt:', { email, password })

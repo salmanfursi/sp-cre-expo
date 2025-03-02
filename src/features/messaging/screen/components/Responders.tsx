@@ -10,7 +10,9 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import DocumentPicker from 'react-native-document-picker';
+// import DocumentPicker from 'react-native-document-picker';
+import * as DocumentPicker from 'expo-document-picker';
+
 import RNFS from 'react-native-fs';
 
 import {
@@ -45,62 +47,106 @@ const Responders = ({leadId}) => {
 
   // Handle file attachment
   
+  // const handleAttachFile = async () => {
+  //   try {
+  //     // Pick a file
+  //     const file = await DocumentPicker.pickSingle({
+  //       type: [
+  //         DocumentPicker.types.images,
+  //         DocumentPicker.types.audio,
+  //         DocumentPicker.types.video,
+  //         DocumentPicker.types.allFiles,
+  //       ],
+  //     });
+  
+  //     if (!file || !file.uri) {
+  //       throw new Error('File is invalid or missing URI');
+  //     }
+  
+  //     console.log('Picked file:', file);
+  
+  //     // Resolve content URI to a local path for Android
+  //     let filePath = file.uri;
+  //     if (Platform.OS === 'android' && file.uri.startsWith('content://')) {
+  //       const fileName = file.name || 'temp_file';
+  //       const destPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+  
+  //       // Use RNBlobUtil to copy the file to the app's directory
+  //       await RNBlobUtil.fs.cp(file.uri, destPath);
+  //       filePath = destPath;
+  //     }
+  
+  //     // Validate file size (max 10MB)
+  //     if (file.size > 10 * 1024 * 1024) {
+  //       Alert.alert('Error', 'File size exceeds 10MB');
+  //       return;
+  //     }
+  
+  //     // Create FormData
+  //     const formData = new FormData();
+  //     formData.append('file', {
+  //       uri: filePath, // Use the resolved file path
+  //       name: file.name,
+  //       type: file.type,
+  //     });
+  
+  //     // Make the API call
+  //     const response = await sendFileMessage({
+  //       leadId,
+  //       file: formData,
+  //     }).unwrap();
+  
+  //     Alert.alert('Success', 'File sent successfully');
+  //   } catch (error) {
+  //     console.error('File upload error:', error);
+  //     Alert.alert('Error', `Failed to upload file: ${error.message}`);
+  //   }
+  // };
+  
   const handleAttachFile = async () => {
     try {
-      // Pick a file
-      const file = await DocumentPicker.pickSingle({
-        type: [
-          DocumentPicker.types.images,
-          DocumentPicker.types.audio,
-          DocumentPicker.types.video,
-          DocumentPicker.types.allFiles,
-        ],
-      });
-  
-      if (!file || !file.uri) {
-        throw new Error('File is invalid or missing URI');
-      }
-  
-      console.log('Picked file:', file);
-  
-      // Resolve content URI to a local path for Android
-      let filePath = file.uri;
-      if (Platform.OS === 'android' && file.uri.startsWith('content://')) {
-        const fileName = file.name || 'temp_file';
-        const destPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-  
-        // Use RNBlobUtil to copy the file to the app's directory
-        await RNBlobUtil.fs.cp(file.uri, destPath);
-        filePath = destPath;
-      }
-  
-      // Validate file size (max 10MB)
-      if (file.size > 10 * 1024 * 1024) {
-        Alert.alert('Error', 'File size exceeds 10MB');
-        return;
-      }
-  
-      // Create FormData
-      const formData = new FormData();
-      formData.append('file', {
-        uri: filePath, // Use the resolved file path
-        name: file.name,
-        type: file.type,
-      });
-  
-      // Make the API call
-      const response = await sendFileMessage({
-        leadId,
-        file: formData,
-      }).unwrap();
-  
-      Alert.alert('Success', 'File sent successfully');
+        // Pick a file using Expo Document Picker
+        const file = await DocumentPicker.getDocumentAsync({
+            type: '*/*', // Allow all file types
+            copyToCacheDirectory: true, // Required for proper file handling
+            multiple: false, // Ensure only one file is picked
+        });
+
+        if (file.canceled) {
+            console.log('User canceled document picking.');
+            return;
+        }
+
+        const pickedFile = file.assets[0]; // Expo returns an array of files
+
+        console.log('Picked file:', pickedFile);
+
+        // Validate file size (Max 10MB)
+        if (pickedFile.size > 10 * 1024 * 1024) {
+            Alert.alert('Error', 'File size exceeds 10MB');
+            return;
+        }
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('file', {
+            uri: pickedFile.uri, // Use Expo's file URI
+            name: pickedFile.name,
+            type: pickedFile.mimeType || 'application/octet-stream', // Ensure a valid type
+        });
+
+        // Send File API Call
+        const response = await sendFileMessage({
+            leadId,
+            file: formData,
+        }).unwrap();
+
+        Alert.alert('Success', 'File sent successfully');
     } catch (error) {
-      console.error('File upload error:', error);
-      Alert.alert('Error', `Failed to upload file: ${error.message}`);
+        console.error('File upload error:', error);
+        Alert.alert('Error', `Failed to upload file: ${error.message}`);
     }
-  };
-  
+};
 
   return (
     <View className="flex-row items-center p-2 border-t border-gray-200 bg-white">

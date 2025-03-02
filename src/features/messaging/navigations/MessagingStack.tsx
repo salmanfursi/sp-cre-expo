@@ -8,13 +8,16 @@ const Stack = createNativeStackNavigator();
 const MessagingStack = () => {
   return (
     <Stack.Navigator
-   
+    screenOptions={{
+      headerShown: false,  // Ensure header is visible
+     }}
     >
-      <Stack.Screen options={{headerShown: true}} name="Conversation" component={ConversationList} />
-      {/* <Stack.Screen options={{headerShown: false}} name="inbox" component={Inbox} /> */}
+      <Stack.Screen name="Conversation" component={ConversationList} />
+      <Stack.Screen name="inbox" component={Inbox} />
     </Stack.Navigator>
   );
 };
 
 export default MessagingStack;
+
 

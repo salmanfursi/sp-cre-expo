@@ -38,7 +38,6 @@ const BottomTabNavigator = () => {
             </Text>
           ),
         })}
-        
       >
        <Tab.Screen name="Chat" component={MessagingStack} />
        <Tab.Screen name="Calls" component={CallsScreen} />

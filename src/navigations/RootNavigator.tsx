@@ -46,11 +46,11 @@ const RootNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-         {/* {!isLoggedIn ? (
+         {!isLoggedIn ? (
             <Stack.Screen name="Login" component={LoginScreen} />  
-         ) : (    */}
+         ) : (   
           <Stack.Screen name="Main" component={BottomTabNavigator} />
-            {/* )}  */}
+              )}  
       </Stack.Navigator>
     </NavigationContainer>
   );
