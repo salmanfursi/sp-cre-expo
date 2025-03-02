@@ -44,64 +44,6 @@ const Responders = ({leadId}) => {
       Alert.alert('Error', 'Failed to send message');
     }
   };
-
-  // Handle file attachment
-  
-  // const handleAttachFile = async () => {
-  //   try {
-  //     // Pick a file
-  //     const file = await DocumentPicker.pickSingle({
-  //       type: [
-  //         DocumentPicker.types.images,
-  //         DocumentPicker.types.audio,
-  //         DocumentPicker.types.video,
-  //         DocumentPicker.types.allFiles,
-  //       ],
-  //     });
-  
-  //     if (!file || !file.uri) {
-  //       throw new Error('File is invalid or missing URI');
-  //     }
-  
-  //     console.log('Picked file:', file);
-  
-  //     // Resolve content URI to a local path for Android
-  //     let filePath = file.uri;
-  //     if (Platform.OS === 'android' && file.uri.startsWith('content://')) {
-  //       const fileName = file.name || 'temp_file';
-  //       const destPath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-  
-  //       // Use RNBlobUtil to copy the file to the app's directory
-  //       await RNBlobUtil.fs.cp(file.uri, destPath);
-  //       filePath = destPath;
-  //     }
-  
-  //     // Validate file size (max 10MB)
-  //     if (file.size > 10 * 1024 * 1024) {
-  //       Alert.alert('Error', 'File size exceeds 10MB');
-  //       return;
-  //     }
-  
-  //     // Create FormData
-  //     const formData = new FormData();
-  //     formData.append('file', {
-  //       uri: filePath, // Use the resolved file path
-  //       name: file.name,
-  //       type: file.type,
-  //     });
-  
-  //     // Make the API call
-  //     const response = await sendFileMessage({
-  //       leadId,
-  //       file: formData,
-  //     }).unwrap();
-  
-  //     Alert.alert('Success', 'File sent successfully');
-  //   } catch (error) {
-  //     console.error('File upload error:', error);
-  //     Alert.alert('Error', `Failed to upload file: ${error.message}`);
-  //   }
-  // };
   
   const handleAttachFile = async () => {
     try {

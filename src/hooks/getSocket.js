@@ -1,36 +1,68 @@
 
 
-// socketService.js
-import { io } from 'socket.io-client';
+// // socketService.js
+// import { io } from 'socket.io-client';
 
-let socket;
+// let socket;
+
+// export const connectSocket = () => {
+//   socket = io('https://crm.solutionprovider.com.bd/api', {
+//   // socket = io('http://localhost:5000', {
+//     path: '/socket.io',
+//     reconnectionDelay: 1000,
+//     reconnection: true, 
+//     reconnectionAttempts: 10,
+//     transports: ['websocket'],
+//     agent: false,
+//     upgrade: false,
+//     rejectUnauthorized: false,
+//   });
+
+//   socket.on('connect', () => {
+//     console.log('Socket connected:', socket.id);
+//   });
+
+//   socket.on('disconnect', (reason) => {
+//     console.log('Socket disconnected:', reason);
+//   });
+
+//   socket.on('connect_error', (error) => {
+//     console.log('Socket connection error:', error);
+//   });
+
+//   return socket;
+// };
+
+// export const getSocket = () => connectSocket();
+
+
+
+
+
+
+import { io } from "socket.io-client";
+
+let socket = null; // ✅ Global socket instance
 
 export const connectSocket = () => {
-  socket = io('https://crm.solutionprovider.com.bd/api', {
-  // socket = io('http://localhost:5000', {
-    path: '/socket.io',
-    reconnectionDelay: 1000,
-    reconnection: true, 
-    reconnectionAttempts: 10,
-    transports: ['websocket'],
-    agent: false,
-    upgrade: false,
-    rejectUnauthorized: false,
-  });
+  if (!socket) {  // ✅ Prevent multiple connections
+    socket = io("https://crm.solutionprovider.com.bd/api", {
+      path: "/socket.io",
+      reconnectionDelay: 1000,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      transports: ["websocket"],
+      agent: false,
+      upgrade: false,
+      rejectUnauthorized: false,
+    });
 
-  socket.on('connect', () => {
-    console.log('Socket connected:', socket.id);
-  });
+    socket.on("connect", () => console.log("✅ Socket connected:", socket.id));
+    socket.on("disconnect", (reason) => console.log("⚠️ Socket disconnected:", reason));
+    socket.on("connect_error", (error) => console.log("❌ Socket connection error:", error));
+  }
 
-  socket.on('disconnect', (reason) => {
-    console.log('Socket disconnected:', reason);
-  });
-
-  socket.on('connect_error', (error) => {
-    console.log('Socket connection error:', error);
-  });
-
-  return socket;
+  return socket; // ✅ Always return the same instance
 };
 
-export const getSocket = () => connectSocket();
+export const getSocket = () => socket || connectSocket(); // ✅ Return existing socket or create new

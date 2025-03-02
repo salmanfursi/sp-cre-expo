@@ -1,4 +1,4 @@
-import {getSocket} from '../../hooks/getSocket';
+ import { getSocket } from '../../hooks/getSocket';
 import apiSlice from '../api/apiSlice';
 
 const socket = getSocket();

@@ -33,7 +33,8 @@ const ConversationList = ({}) => {
 
   const { user, token, loading } = useAuth();
 const creId=user?._id
-console.log('user creId----->',user)
+console.log('user creId----->',user,'loading',loading)
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -44,7 +45,7 @@ console.log('user creId----->',user)
     useGetAllConversationsQuery({
       page: currentPage,
       limit,
-      // creId
+      creId
     });
   const lead = data?.leads;
 

@@ -3,9 +3,9 @@ import {Provider} from 'react-redux';
 import store from './redux/store';
 import RootNavigator from './navigations/RootNavigator';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {getSocket} from './hooks/getSocket';
-import 'react-native-gesture-handler';
+ import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { getSocket } from './hooks/getSocket';
 
 const App = () => {
   useEffect(() => {

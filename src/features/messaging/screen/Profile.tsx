@@ -46,6 +46,7 @@ const navigation=useNavigation()
           {user?.nameAsPerNID}
         </Text>
         <Text className="text-gray-500">{user?.type}</Text>
+        <Text className="text-gray-500">Cre-Id:{user?._id}</Text>
 
         {/* Contact Info */}
         <View className="mt-4">

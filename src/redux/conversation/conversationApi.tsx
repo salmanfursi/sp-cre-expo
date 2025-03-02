@@ -1,4 +1,4 @@
-import {getSocket} from '../../hooks/getSocket';
+ import { getSocket } from '../../hooks/getSocket';
 import apiSlice from '../api/apiSlice';
 import {
   Conversation,
@@ -64,37 +64,56 @@ const conversationApi = apiSlice.injectEndpoints({
 
     getAllConversations: builder.query<
       GetAllConversationsResponse,
-      {page: number; limit: number; creId:String}
+      {page: number; limit: number; creId:string}
     >({
-      query: ({ page, limit, creId }) => ({
-        url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`,
-      }),
+      query: ({ page, limit, creId }) => {
+        console.log("Fetching conversations for:", {'page':page, 'limit':limit,'creId': creId});
+        return {url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`}
+      },
 
       // Keep cached data for 5 minutes
-      keepUnusedDataFor: 300,
+      // keepUnusedDataFor: 300,
       // Serialize query args to ensure proper caching
-      serializeQueryArgs: ({endpointName}) => {
-        return endpointName;
+      // serializeQueryArgs: ({endpointName}) => {
+      //   return endpointName;
+      // },
+      serializeQueryArgs: ({ endpointName, queryArgs }) => {
+        return `${endpointName}-${queryArgs.creId}`;
       },
 
       // Merge function to handle pagination and deduplication
-      merge: (currentCache, newData, {arg}) => {
-        if (!currentCache) return newData;
+      // merge: (currentCache, newData, {arg}) => {
+      //   if (!currentCache) return newData;
 
-        // For first page, replace entire cache
+      //   // For first page, replace entire cache
+      //   if (arg.page === 1) {
+      //     return newData;
+      //   }
+
+      //   // Merge and deduplicate leads
+      //   return {
+      //     ...newData,
+      //     leads: [...currentCache.leads, ...newData.leads].filter(
+      //       (lead, index, self) =>
+      //         index === self.findIndex(l => l._id === lead._id),
+      //     ),
+      //   };
+      // },
+
+      merge: (currentCache, newData, { arg }) => {
+        if (!currentCache) return newData;
         if (arg.page === 1) {
           return newData;
         }
-
-        // Merge and deduplicate leads
         return {
           ...newData,
           leads: [...currentCache.leads, ...newData.leads].filter(
             (lead, index, self) =>
-              index === self.findIndex(l => l._id === lead._id),
+              index === self.findIndex((l) => l._id === lead._id)
           ),
         };
       },
+      
 
       // Transform response to maintain consistency
       transformResponse: (response: GetAllConversationsResponse) => {
@@ -109,7 +128,7 @@ const conversationApi = apiSlice.injectEndpoints({
       },
 
       // Determine if we should refetch
-      forceRefetch({currentArg, previousArg}) {
+      forceRefetch({ currentArg, previousArg }) {
         return currentArg?.page !== previousArg?.page;
       },
 
