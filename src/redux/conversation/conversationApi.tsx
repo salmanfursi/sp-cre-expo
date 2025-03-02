@@ -64,14 +64,14 @@ const conversationApi = apiSlice.injectEndpoints({
 
     getAllConversations: builder.query<
       GetAllConversationsResponse,
-      {page: number; limit: number}
+      {page: number; limit: number; creId:String}
     >({
-      query: ({page, limit}) =>
-        `/lead/conversation?page=${page}&limit=${limit}`,
+      query: ({ page, limit, creId }) => ({
+        url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`,
+      }),
 
       // Keep cached data for 5 minutes
       keepUnusedDataFor: 300,
-
       // Serialize query args to ensure proper caching
       serializeQueryArgs: ({endpointName}) => {
         return endpointName;

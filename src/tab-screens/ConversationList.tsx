@@ -32,8 +32,8 @@ const ConversationList = ({}) => {
   const closeMenu = () => setMenuVisible(false);
 
   const { user, token, loading } = useAuth();
-
-console.log('user----->',user)
+const creId=user?._id
+console.log('user creId----->',user)
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -44,6 +44,7 @@ console.log('user----->',user)
     useGetAllConversationsQuery({
       page: currentPage,
       limit,
+      // creId
     });
   const lead = data?.leads;
 
@@ -77,9 +78,7 @@ console.log('user----->',user)
         <Image
           source={{ uri: profilePictureUrl }}
           className="w-12 h-12 rounded-full mb-1"
-          // onError={() => console.log("Image load error:", profilePictureUrl)}
-          // onLoad={() => console.log("Image loaded successfully:", profilePictureUrl)}
-        />
+         />
 
         <View className="flex-row items-center space-x-2"></View>
 
@@ -111,35 +110,6 @@ console.log('user----->',user)
       </Pressable>
     );
   };
-
-  // if (isLoading && currentPage === 1) {
-  //   return (
-  //     <View className="flex-1 items-center justify-center bg-white">
-  //       <ActivityIndicator size="large" color="#4CAF50" />
-  //       <Text className="text-lg text-gray-500">Loading conversations...</Text>
-  //     </View>
-  //   );
-  // }
-
-  // if (error || isLoading) {
-  //   return (
-  //     <View className="flex-1 items-center justify-center bg-white">
-  //       <Text className="text-lg">Failed to load conversations.</Text>
-  //       <View>
-  //         {isLoading ? (
-  //           <ActivityIndicator size="large" color="#0000ff" />
-  //         ) : (
-  //           <Text className="text-md text-red-500">{error?.message || "Unknown error occurred"}</Text>
-  //         )}
-  //       </View>
-  //       <TouchableOpacity onPress={() => refetch()}>
-  //         <Text className="text-md font-bold p-2 px-4 rounded bg-red-700 text-white m-2">
-  //           Reload
-  //         </Text>
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // }
 
   if (error || isLoading || !data?.leads) {
     return (
@@ -189,7 +159,7 @@ console.log('user----->',user)
                   size={50}
                   source={{
                     uri:
-                      // userData?.profilePicture ||
+                      user?.profilePicture ||
                       "https://via.placeholder.com/35",
                   }}
                 />
@@ -203,7 +173,8 @@ console.log('user----->',user)
           >
             <Menu.Item
               onPress={() => {
-                closeMenu();
+                // closeMenu();
+                navigation.navigate('profile')
               }}
               title="Profile"
               titleStyle={{ color: "#000000" }}

@@ -8,6 +8,7 @@ import { setUser } from '../../../redux/auth/authSlice'
 const LoginScreen=({ navigation })=> {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [loginUser, { isLoading }] = useLoginUserMutation()
   const dispatch = useDispatch()
 
@@ -23,7 +24,7 @@ const LoginScreen=({ navigation })=> {
       const { user, token } = await loginUser({ email, password }).unwrap()
       dispatch(setUser({ user, token }))
       console.log('user, token,', { user, token })
-      navigation.replace('Main')
+      // navigation.replace('Main')
     } catch (err) {
       console.error('Login error', err)
       Alert.alert('Login Failed', err.message || 'An error occurred during login')
