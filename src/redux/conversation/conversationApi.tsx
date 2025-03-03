@@ -12,6 +12,8 @@ import {
 // Define Types for Message, Conversation, Lead, and other entities
 
 const socket = getSocket();
+console.log('is socket available',socket)
+
 
 const conversationApi = apiSlice.injectEndpoints({
   endpoints: builder => ({
@@ -62,150 +64,243 @@ const conversationApi = apiSlice.injectEndpoints({
       providesTags: (result, error, id) => [{type: 'Lead', id}],
     }),
 
-    getAllConversations: builder.query<
-      GetAllConversationsResponse,
-      {page: number; limit: number; creId:string}
-    >({
-      query: ({ page, limit, creId }) => {
-        console.log("Fetching conversations for:", {'page':page, 'limit':limit,'creId': creId});
-        return {url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`}
-      },
+    // getAllConversations: builder.query<
+    //   GetAllConversationsResponse,
+    //   {page: number; limit: number; creId:string}
+    // >({
+    //   query: ({ page, limit, creId }) => {
+    //     console.log("Fetching conversations for:", {'page':page, 'limit':limit,'creId': creId});
+    //     return {url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`}
+    //   },
 
-      // Keep cached data for 5 minutes
-      // keepUnusedDataFor: 300,
-      // Serialize query args to ensure proper caching
-      // serializeQueryArgs: ({endpointName}) => {
-      //   return endpointName;
-      // },
-      serializeQueryArgs: ({ endpointName, queryArgs }) => {
-        return `${endpointName}-${queryArgs.creId}`;
-      },
+    //   // Keep cached data for 5 minutes
+    //   // keepUnusedDataFor: 300,
+    //   // Serialize query args to ensure proper caching
+    //   // serializeQueryArgs: ({endpointName}) => {
+    //   //   return endpointName;
+    //   // },
+    //   serializeQueryArgs: ({ endpointName, queryArgs }) => {
+    //     return `${endpointName}-${queryArgs.creId}`;
+    //   },
 
-      // Merge function to handle pagination and deduplication
-      // merge: (currentCache, newData, {arg}) => {
-      //   if (!currentCache) return newData;
+    //   // Merge function to handle pagination and deduplication
+    //   // merge: (currentCache, newData, {arg}) => {
+    //   //   if (!currentCache) return newData;
 
-      //   // For first page, replace entire cache
-      //   if (arg.page === 1) {
-      //     return newData;
-      //   }
+    //   //   // For first page, replace entire cache
+    //   //   if (arg.page === 1) {
+    //   //     return newData;
+    //   //   }
 
-      //   // Merge and deduplicate leads
-      //   return {
-      //     ...newData,
-      //     leads: [...currentCache.leads, ...newData.leads].filter(
-      //       (lead, index, self) =>
-      //         index === self.findIndex(l => l._id === lead._id),
-      //     ),
-      //   };
-      // },
+    //   //   // Merge and deduplicate leads
+    //   //   return {
+    //   //     ...newData,
+    //   //     leads: [...currentCache.leads, ...newData.leads].filter(
+    //   //       (lead, index, self) =>
+    //   //         index === self.findIndex(l => l._id === lead._id),
+    //   //     ),
+    //   //   };
+    //   // },
 
-      merge: (currentCache, newData, { arg }) => {
-        if (!currentCache) return newData;
-        if (arg.page === 1) {
-          return newData;
-        }
-        return {
-          ...newData,
-          leads: [...currentCache.leads, ...newData.leads].filter(
-            (lead, index, self) =>
-              index === self.findIndex((l) => l._id === lead._id)
-          ),
-        };
-      },
+    //   merge: (currentCache, newData, { arg }) => {
+    //     if (!currentCache) return newData;
+    //     if (arg.page === 1) {
+    //       return newData;
+    //     }
+    //     return {
+    //       ...newData,
+    //       leads: [...currentCache.leads, ...newData.leads].filter(
+    //         (lead, index, self) =>
+    //           index === self.findIndex((l) => l._id === lead._id)
+    //       ),
+    //     };
+    //   },
       
 
-      // Transform response to maintain consistency
-      transformResponse: (response: GetAllConversationsResponse) => {
-        return {
-          ...response,
-          leads: response.leads.sort(
+    //   // Transform response to maintain consistency
+    //   transformResponse: (response: GetAllConversationsResponse) => {
+    //     return {
+    //       ...response,
+    //       leads: response.leads.sort(
+    //         (a, b) =>
+    //           new Date(b.lastMessageTime).getTime() -
+    //           new Date(a.lastMessageTime).getTime(),
+    //       ),
+    //     };
+    //   },
+
+    //   // Determine if we should refetch
+    //   forceRefetch({ currentArg, previousArg }) {
+    //     return currentArg?.page !== previousArg?.page;
+    //   },
+
+    //   // Handle real-time updates via socket
+    //   async onCacheEntryAdded(
+    //     arg,
+    //     {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
+    //   ) {
+    //     try {
+    //       // Wait for the initial cache entry to be added
+    //       await cacheDataLoaded;
+
+    //       // Socket handler for conversation updates
+    //       const handleConversationUpdate = (conversation: Conversation) => {
+    //         updateCachedData(draft => {
+    //           const index = draft.leads.findIndex(
+    //             ({_id}) => _id === conversation._id,
+    //           );
+
+    //           if (index !== -1) {
+    //             // Update existing conversation
+    //             draft.leads[index] = conversation;
+    //           } else {
+    //             // Add new conversation to the beginning
+    //             draft.leads.unshift(conversation);
+    //           }
+
+    //           // Maintain sorting
+    //           draft.leads.sort(
+    //             (a, b) =>
+    //               new Date(b.lastMessageTime).getTime() -
+    //               new Date(a.lastMessageTime).getTime(),
+    //           );
+    //         });
+    //       };
+
+    //       // Subscribe to socket events
+    //       socket.on('conversation', handleConversationUpdate);
+
+    //       // Cleanup on cache entry removal
+    //       await cacheEntryRemoved;
+    //       socket.off('conversation', handleConversationUpdate);
+    //     } catch (err) {
+    //       console.error('Socket error:', err);
+    //     }
+    //   },
+    // }),
+
+    getAllConversations: builder.query<
+    GetAllConversationsResponse,
+    { page: number; limit: number; creId?: string }
+  >({
+    query: ({ page, limit, creId }) => {
+      let queryParams = `page=${page}&limit=${limit}`;
+      if (creId) {
+        queryParams += `&creId=${creId}`;
+      }
+      return `/lead/conversation?${queryParams}`;
+    },
+    onCacheEntryAdded: async (
+      arg,
+      { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+    ) => {
+      await cacheDataLoaded;
+
+      const handleConversationUpdate = (conversation: Conversation) => {
+        updateCachedData(draft => {
+          const index = draft.leads.findIndex(
+            ({ _id }) => _id === conversation._id
+          );
+          if (index !== -1) {
+            draft.leads[index] = conversation;
+          } else {
+            draft.leads.unshift(conversation);
+          }
+          draft.leads.sort(
             (a, b) =>
               new Date(b.lastMessageTime).getTime() -
-              new Date(a.lastMessageTime).getTime(),
-          ),
-        };
-      },
+              new Date(a.lastMessageTime).getTime()
+          );
+        });
+      };
 
-      // Determine if we should refetch
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg?.page !== previousArg?.page;
-      },
+      socket.on('conversation', handleConversationUpdate);
+      await cacheEntryRemoved;
+      socket.off('conversation', handleConversationUpdate);
+    },
+  }),
 
-      // Handle real-time updates via socket
-      async onCacheEntryAdded(
-        arg,
-        {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
-      ) {
-        try {
-          // Wait for the initial cache entry to be added
-          await cacheDataLoaded;
 
-          // Socket handler for conversation updates
-          const handleConversationUpdate = (conversation: Conversation) => {
-            updateCachedData(draft => {
-              const index = draft.leads.findIndex(
-                ({_id}) => _id === conversation._id,
-              );
-
-              if (index !== -1) {
-                // Update existing conversation
-                draft.leads[index] = conversation;
-              } else {
-                // Add new conversation to the beginning
-                draft.leads.unshift(conversation);
-              }
-
-              // Maintain sorting
-              draft.leads.sort(
-                (a, b) =>
-                  new Date(b.lastMessageTime).getTime() -
-                  new Date(a.lastMessageTime).getTime(),
-              );
-            });
-          };
-
-          // Subscribe to socket events
-          socket.on('conversation', handleConversationUpdate);
-
-          // Cleanup on cache entry removal
-          await cacheEntryRemoved;
-          socket.off('conversation', handleConversationUpdate);
-        } catch (err) {
-          console.error('Socket error:', err);
-        }
-      },
-    }),
 
     // Get conversation messages for a specific lead
+    // getConversationMessages: builder.query<
+    //   GetConversationMessagesResponse,
+    //   string
+    // >({
+    //   query: (id: string) => `/lead/conversation/${id}/messages/`,
+    //   onCacheEntryAdded: async (
+    //     id,
+    //     {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
+    //   ) => {
+    //     await cacheDataLoaded;
+
+    //     const handleMessageUpdate = (message: Message) => {
+    //       updateCachedData(draft => {
+    //         if (
+    //           !draft.messages.find(
+    //             ({messageId}) => messageId === message.messageId,
+    //           )
+    //         ) {
+    //           draft.messages.push(message);
+    //         }
+    //       });
+    //     };
+
+    //     socket.on(`fbMessage${id}`, handleMessageUpdate);
+    //     await cacheEntryRemoved;
+    //     socket.off(`fbMessage${id}`, handleMessageUpdate);
+    //   },
+    // }),
+
+
     getConversationMessages: builder.query<
-      GetConversationMessagesResponse,
-      string
-    >({
-      query: (id: string) => `/lead/conversation/${id}/messages/`,
-      onCacheEntryAdded: async (
-        id,
-        {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
-      ) => {
-        await cacheDataLoaded;
+			GetConversationMessagesResponse,
+			string
+		>({
+			query: (id: string) => `/lead/conversation/${id}/messages/`,
+			onCacheEntryAdded: async (
+				id,
+				{ updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+			) => {
+				await cacheDataLoaded;
 
-        const handleMessageUpdate = (message: Message) => {
-          updateCachedData(draft => {
-            if (
-              !draft.messages.find(
-                ({messageId}) => messageId === message.messageId,
-              )
-            ) {
-              draft.messages.push(message);
-            }
-          });
-        };
+				const handleMessageUpdate = (message: Message) => {
+					updateCachedData(draft => {
+						if (
+							!draft.messages.find(
+								({ messageId }) => messageId === message.messageId
+							)
+						) {
+							draft.messages.push(message);
+						}
+					});
+				};
 
-        socket.on(`fbMessage${id}`, handleMessageUpdate);
-        await cacheEntryRemoved;
-        socket.off(`fbMessage${id}`, handleMessageUpdate);
-      },
-    }),
+				socket.on(`fbMessage${id}`, handleMessageUpdate);
+				await cacheEntryRemoved;
+				socket.off(`fbMessage${id}`, handleMessageUpdate);
+			},
+		}),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Mark messages as seen with optimistic update
     markAsSeen: builder.mutation<void, {id: string}>({

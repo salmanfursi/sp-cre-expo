@@ -4,12 +4,10 @@
     "slug": "sp-cre-expo",
     "version": "1.0.0",
     "orientation": "portrait",
-    // "icon": "./assets/icon.png",
     "icon": "./assets/cre_icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      // "image": "./assets/splash-icon.png",
       "image": "./assets/cre_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
@@ -21,10 +19,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.solutionprovider.spcreexpo"
     },
     "web": {
       "favicon": "./assets/cre_favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "798082c5-66e3-44c8-9cdf-337ade2e308d"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "enabled": true,
+      "url": "https://u.expo.dev/798082c5-66e3-44c8-9cdf-337ade2e308d",
+      "fallbackToCacheTimeout": 0
     }
   }
 }

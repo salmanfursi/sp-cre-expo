@@ -23,6 +23,7 @@ import { logoutUser } from "../redux/auth/authSlice";
 import { transparent } from "react-native-paper/lib/typescript/styles/themes/v2/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuth from "../hooks/useAuth";
+import { getSocket } from "../hooks/getSocket";
 
 const ConversationList = ({}) => {
   const navigation = useNavigation();
@@ -50,6 +51,10 @@ console.log('user creId----->',user,'loading',loading)
   const lead = data?.leads;
 
  
+const socket = getSocket();
+console.log('is socket available',socket)
+
+console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No');
 
   const [markAsSeen] = useMarkAsSeenMutation();
 
@@ -115,10 +120,12 @@ console.log('user creId----->',user,'loading',loading)
   if (error || isLoading || !data?.leads) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-lg font-bold text-red-500">
-          {error ? "Failed to load conversations." : "No conversations found."}
+        <Text className="text-lg font-bold text-red-600 px-6">
+          {error
+            ? "Failed to load conversations. Please check your connection."
+            : "No conversations found."}
         </Text>
-
+  
         <View className="mt-4">
           {isLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
@@ -128,15 +135,22 @@ console.log('user creId----->',user,'loading',loading)
             </Text>
           )}
         </View>
-
-        <TouchableOpacity onPress={() => refetch()}>
-          <Text className="text-md font-bold p-2 px-4 rounded bg-red-700 text-white mt-4">
-            Reload
+  
+        <TouchableOpacity
+          onPress={() => refetch()}
+          disabled={isLoading} // Disable while loading
+          className={`mt-4 p-2 px-4 rounded ${
+            isLoading ? "bg-gray-400" : "bg-red-700"
+          }`}
+        >
+          <Text className="text-md font-bold text-white">
+            {isLoading ? "Reloading..." : "Reload"}
           </Text>
         </TouchableOpacity>
       </View>
     );
   }
+  
 
   const handleLogout = () => {
     dispatch(logoutUser());
