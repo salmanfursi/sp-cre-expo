@@ -75,7 +75,7 @@ const InfoSidebar = ({children, isOpen, onClose, onOpen, conversationId}) => {
       drawerPosition="right"
       drawerStyle={{width: 300}}
       renderDrawerContent={() => (
-        <ScrollView className="flex-1 p-4">
+        <View className="flex-1 p-4">
           {/* Header */}
           <View className="flex-row justify-between items-center mb-4">
             <Text className="text-xl font-bold text-black">Sidebar Menu</Text>
@@ -167,7 +167,7 @@ const InfoSidebar = ({children, isOpen, onClose, onOpen, conversationId}) => {
           <Comment conversationId={conversationId} />
 
           {/* Address Modal */}
-        </ScrollView>
+        </View>
       )}>
       {/* Main Content */}
       <View className="flex-1">{children}</View>

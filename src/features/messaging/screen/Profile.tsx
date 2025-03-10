@@ -15,15 +15,16 @@ const navigation=useNavigation()
       </View>
     );
   }
+  // console.log("user",user);
 
   return (
     <ScrollView className="flex-1 bg-gray-100">
       {/* Cover Photo */}
       <View className="relative">
-        <Image
-          source={{ uri: user?.coverPhoto }}
-          className="w-full h-40 object-cover"
-        />
+  {user && <Image
+    source={{ uri: user?.coverPhoto }}
+    className="w-full h-40 object-cover"
+  />}
         {/* Profile Picture */}
         <View className="absolute left-4 bottom-[-30] rounded-full overflow-hidden border-4 border-white">
           <Image

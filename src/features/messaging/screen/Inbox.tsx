@@ -162,7 +162,7 @@ export default function Inbox() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
       >
-        <InfoSidebar
+         <InfoSidebar
           isOpen={isSidebarOpen}
           onOpen={openSidebar}
           onClose={closeSidebar}

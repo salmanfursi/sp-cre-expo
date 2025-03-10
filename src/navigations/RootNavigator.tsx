@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomTabNavigator from './BottomTabNavigator';
 import LoginScreen from '../features/auth/screen/LoginScreen';
+import Welcome from '../features/auth/screen/Welcome';
     
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ const RootNavigator = () => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -43,6 +45,10 @@ const RootNavigator = () => {
     return null;  
   }
 
+  if (!showWelcome) {
+    return <Welcome onVerify={() => setShowWelcome(false)} />;
+  }
+ 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>

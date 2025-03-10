@@ -165,6 +165,7 @@
 
 
 
+// jsut image not send everything is correct
 
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -181,7 +182,7 @@ import {
   Platform,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import * as DocumentPicker from "expo-document-picker";
+import * as DocumentPicker from 'expo-document-picker';
 
 import {
   useSendMessageMutation,
@@ -192,6 +193,7 @@ import {
 } from "../../../../redux/upload/upload"; // Corrected upload API import
 
 const Responders = ({ leadId }) => {
+  console.log('DocumentPicker--->',DocumentPicker)
   const [message, setMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -378,3 +380,280 @@ console.log('handleSendFileMessage images',response);
 };
 
 export default Responders;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect, useRef } from "react";
+// import {
+//   TextInput,
+//   Text,
+//   TouchableOpacity,
+//   View,
+//   Alert,
+//   ScrollView,
+//   Animated,
+//   ActivityIndicator,
+//   Easing,
+//   KeyboardAvoidingView,
+//   Platform,
+// } from "react-native";
+// import Icon from "react-native-vector-icons/MaterialIcons";
+
+// import * as DocumentPicker from "expo-document-picker";
+
+// import {
+//   useSendMessageMutation,
+// } from "../../../../redux/message/messageApi";
+
+// import {
+//   useUploadMultipleImagesMutation, // Use the correct mutation for image uploads
+// } from "../../../../redux/upload/upload"; 
+
+// const Responders = ({ leadId }) => {
+//   const [message, setMessage] = useState("");
+//   const [selectedImages, setSelectedImages] = useState([]);
+//   const [isUploading, setIsUploading] = useState(false);
+//   const [messages, setMessages] = useState([]);
+//   const [toastMessage, setToastMessage] = useState("");
+//   const [showToast, setShowToast] = useState(false);
+//   const toastOpacity = useRef(new Animated.Value(0)).current;
+
+//   const [sendMessage, { isLoading }] = useSendMessageMutation();
+//   const [uploadMultipleImages] = useUploadMultipleImagesMutation();
+//   const scrollViewRef = useRef(null);
+
+//   // 📌 Auto-scroll when messages update
+//   useEffect(() => {
+//     scrollViewRef.current?.scrollToEnd({ animated: true });
+//   }, [messages]);
+
+//   // 📌 Function to show a toast/snackbar for errors
+//   const showErrorToast = (message) => {
+//     setToastMessage(message);
+//     setShowToast(true);
+//     Animated.timing(toastOpacity, {
+//       toValue: 1,
+//       duration: 200,
+//       useNativeDriver: true,
+//       easing: Easing.out(Easing.quad),
+//     }).start(() => {
+//       setTimeout(() => {
+//         Animated.timing(toastOpacity, {
+//           toValue: 0,
+//           duration: 200,
+//           useNativeDriver: true,
+//         }).start(() => setShowToast(false));
+//       }, 3000);
+//     });
+//   };
+
+//   // 📌 Handle text message send
+//   const handleSendMessage = async () => {
+//     if (message.trim() === "") return;
+//     try {
+//       const response = await sendMessage({
+//         leadId,
+//         messageType: "text",
+//         content: { text: message },
+//       }).unwrap();
+
+//       setMessages((prev) => [...prev, { ...response, local: true }]); // Add to UI instantly
+//       setMessage(""); // Clear input
+//     } catch (error) {
+//       console.error("Failed to send message:", error);
+//       showErrorToast("Failed to send message.");
+//     }
+//   };
+
+//   // 📌 Handle image selection
+//   const handleAttachImage = async () => {
+//     try {
+//       const result = await DocumentPicker.getDocumentAsync({
+//         type: "image/*", // Only allow image selection
+//         copyToCacheDirectory: true,
+//         multiple: false, // expo-document-picker doesn't support multiple selection
+//       });
+  
+//       if (result.canceled) {
+//         console.log("User canceled document picking.");
+//         return;
+//       }
+  
+//       const pickedFile = result.assets[0]; // Extract the selected file
+  
+//       setSelectedImages([
+//         {
+//           uri: pickedFile.uri,
+//           name: pickedFile.name || `image.jpg`,
+//           type: pickedFile.mimeType || "image/jpeg",
+//         },
+//       ]);
+//     } catch (error) {
+//       console.error("Error selecting images:", error);
+//       showErrorToast("Failed to select images.");
+//     }
+//   };
+
+//   // 📌 Handle image uploading
+//   const handleUploadImages = async () => {
+//     if (selectedImages.length === 0) return;
+
+//     try {
+//       setIsUploading(true);
+
+//       const formData = new FormData();
+//       selectedImages.forEach((image) => {
+//         formData.append("images", {
+//           uri: image.uri,
+//           name: image.name,
+//           type: image.type,
+//         });
+//       });
+
+//       const response = await uploadMultipleImages(formData).unwrap();
+//       console.log("Uploaded images response:", response);
+
+//       if (response?.fileUrls) {
+//         await handleSendImageMessage(response.fileUrls);
+//       } else {
+//         showErrorToast("Image upload failed.");
+//       }
+//     } catch (error) {
+//       console.error("Image upload error:", error);
+//       showErrorToast("Failed to upload images.");
+//     } finally {
+//       setIsUploading(false);
+//       setSelectedImages([]);
+//     }
+//   };
+
+//   // 📌 Send the message after uploading images
+//   const handleSendImageMessage = async (fileUrls) => {
+//     try {
+//       const response = await sendMessage({
+//         leadId,
+//         messageType: "image",
+//         content: { urls: fileUrls },
+//       }).unwrap();
+
+//       console.log("Image message sent:", response);
+
+//       setMessages((prev) => [...prev, { ...response, local: true }]); // Add to UI instantly
+//       Alert.alert("Success", "Image sent successfully");
+//     } catch (error) {
+//       console.error("Failed to send image message:", error);
+//       showErrorToast("Failed to send image message.");
+//     }
+//   };
+
+//   return (
+//     <KeyboardAvoidingView
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 80}
+//       className="bg-white border-t border-gray-200 p-2"
+//     >
+//       {selectedImages.length > 0 && (
+//         <ScrollView horizontal className="flex-row items-center bg-gray-100 p-2 rounded">
+//           {selectedImages.map((image, idx) => (
+//             <View key={idx} className="relative mr-3">
+//               <Text className="text-gray-800 mr-2 flex-1">{image.name}</Text>
+//               <TouchableOpacity onPress={() => setSelectedImages(prev => prev.filter((_, i) => i !== idx))}>
+//                 <Icon name="close" size={20} color="red" />
+//               </TouchableOpacity>
+//             </View>
+//           ))}
+//         </ScrollView>
+//       )}
+
+//       <View className="flex-row items-center bg-white p-2 rounded-full border border-gray-300">
+//         <TouchableOpacity onPress={handleAttachImage} disabled={isUploading}>
+//           <Icon name="photo" size={24} color={isUploading ? "gray" : "#06b6d4"} />
+//         </TouchableOpacity>
+
+//         <TextInput
+//           className="flex-1 px-3 py-2 text-gray-700"
+//           placeholder="Type a message..."
+//           value={message}
+//           onChangeText={setMessage}
+//           editable={!isLoading && !isUploading}
+//         />
+
+//         <TouchableOpacity
+//           onPress={selectedImages.length > 0 ? handleUploadImages : handleSendMessage}
+//           disabled={isLoading || isUploading}
+//         >
+//           {isLoading || isUploading ? (
+//             <ActivityIndicator size="small" color="#06b6d4" />
+//           ) : (
+//             <Icon name="send" size={24} color="#06b6d4" />
+//           )}
+//         </TouchableOpacity>
+//       </View>
+
+//       {showToast && (
+//         <Animated.View
+//           style={{
+//             opacity: toastOpacity,
+//             position: "absolute",
+//             top: 50,
+//             left: 10,
+//             right: 10,
+//             zIndex: 999,
+//           }}
+//           className="bg-red-600 p-3 rounded-md"
+//         >
+//           <Text className="text-white text-sm">{toastMessage}</Text>
+//         </Animated.View>
+//       )}
+//     </KeyboardAvoidingView>
+//   );
+// };
+
+// export default Responders;

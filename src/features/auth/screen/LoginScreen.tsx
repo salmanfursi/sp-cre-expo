@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useLoginUserMutation } from '../../../redux/auth/authApi'
 import { setUser } from '../../../redux/auth/authSlice'
+import { StatusBar } from 'expo-status-bar'
 
  
 const LoginScreen=({ navigation })=> {
@@ -33,6 +34,7 @@ const LoginScreen=({ navigation })=> {
 
   return (
     <View className="flex-1 justify-center items-center bg-base p-6">
+      <StatusBar style='auto'/>
       <View className="w-full max-w-sm">
         <Text className="text-3xl font-bold text-indigo-400 mb-8 text-center">
           Welcome Back
