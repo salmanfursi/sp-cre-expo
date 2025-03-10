@@ -7,16 +7,18 @@ import {
   Platform,
   Image,
   Pressable,
-} from "react-native";
+ } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useGetConversationMessagesQuery } from "../../../redux/conversation/conversationApi";
 import Icon from "react-native-vector-icons/MaterialIcons";
-import Responders from "./components/Responders";
+// import Responders from "./components/Responders";
 import MeetingBottomSheet from "./components/InboxMeetingSheet";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import InboxCallSheet from "./components/InboxCallSheet";
 import InfoSidebar from "./components/infobar.tsx/InfoSidebar";
 import moment from "moment";
+import { StatusBar } from 'expo-status-bar';
+import Responders from "./components/Responders";
 
 export default function Inbox() {
   const bottomSheetRef = useRef(null);
@@ -166,6 +168,8 @@ export default function Inbox() {
           onClose={closeSidebar}
           conversationId={conversationId}
         >
+      <StatusBar style="auto" />
+
           <View className="flex-1 bg-gray-200">
             <View className="bg-blue-400 p-2 flex-row justify-between">
               <View className="flex-row gap-2 items-center ">

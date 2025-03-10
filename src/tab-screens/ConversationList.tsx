@@ -24,18 +24,18 @@ import { transparent } from "react-native-paper/lib/typescript/styles/themes/v2/
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useAuth from "../hooks/useAuth";
 import { getSocket } from "../hooks/getSocket";
+import { StatusBar } from "expo-status-bar";
 
 const ConversationList = ({}) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [menuVisible, setMenuVisible] = useState(false);
-   const openMenu = () => setMenuVisible(true);
+  const openMenu = () => setMenuVisible(true);
   const closeMenu = () => setMenuVisible(false);
 
   const { user, token, loading } = useAuth();
-const creId=user?._id
-console.log('user creId----->',user,'loading',loading)
-
+  const creId = user?._id;
+  console.log("user creId----->", user, "loading", loading);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
@@ -46,15 +46,17 @@ console.log('user creId----->',user,'loading',loading)
     useGetAllConversationsQuery({
       page: currentPage,
       limit,
-      creId
+      creId,
     });
   const lead = data?.leads;
 
- 
-const socket = getSocket();
-console.log('is socket available',socket)
+  const socket = getSocket();
+  // console.log("is socket available", socket);
 
-console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No');
+  console.log(
+    "📡 Is socket available?",
+    socket?.connected ? "✅ Yes" : "❌ No"
+  );
 
   const [markAsSeen] = useMarkAsSeenMutation();
 
@@ -84,7 +86,7 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
         <Image
           source={{ uri: profilePictureUrl }}
           className="w-12 h-12 rounded-full mb-1"
-         />
+        />
 
         <View className="flex-row items-center space-x-2"></View>
 
@@ -125,7 +127,7 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
             ? "Failed to load conversations. Please check your connection."
             : "No conversations found."}
         </Text>
-  
+
         <View className="mt-4">
           {isLoading ? (
             <ActivityIndicator size="large" color="#0000ff" />
@@ -135,7 +137,7 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
             </Text>
           )}
         </View>
-  
+
         <TouchableOpacity
           onPress={() => refetch()}
           disabled={isLoading} // Disable while loading
@@ -150,7 +152,6 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
       </View>
     );
   }
-  
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -159,6 +160,8 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
   return (
     <Provider>
       <SafeAreaView className="flex-1 bg-white">
+        <StatusBar style="auto" />
+
         {/* <View className="flex-row justify-between items-center px-4"> */}
         <View className="bg-cyan-600 px-4 py-1 flex-row items-center justify-between">
           <Text className="text-lg font-bold text-white mr-2">
@@ -174,8 +177,7 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
                   size={50}
                   source={{
                     uri:
-                      user?.profilePicture ||
-                      "https://via.placeholder.com/35",
+                      user?.profilePicture || "https://via.placeholder.com/35",
                   }}
                 />
               </TouchableOpacity>
@@ -189,7 +191,7 @@ console.log('📡 Is socket available?', socket?.connected ? '✅ Yes' : '❌ No
             <Menu.Item
               onPress={() => {
                 // closeMenu();
-                navigation.navigate('profile')
+                navigation.navigate("profile");
               }}
               title="Profile"
               titleStyle={{ color: "#000000" }}

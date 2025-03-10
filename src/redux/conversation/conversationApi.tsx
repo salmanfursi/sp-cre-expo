@@ -1,5 +1,5 @@
- import { getSocket } from '../../hooks/getSocket';
-import apiSlice from '../api/apiSlice';
+import { getSocket } from "../../hooks/getSocket";
+import apiSlice from "../api/apiSlice";
 import {
   Conversation,
   GetAllConversationsResponse,
@@ -7,17 +7,16 @@ import {
   GetConversationMessagesResponse,
   Lead,
   UpdateLeadPayload,
-} from './conversation';
+} from "./conversation";
 
 // Define Types for Message, Conversation, Lead, and other entities
 
 const socket = getSocket();
-console.log('is socket available',socket)
-
+// console.log("is socket available", socket);
 
 const conversationApi = apiSlice.injectEndpoints({
-  endpoints: builder => ({
-     // Get all leads with filters
+  endpoints: (builder) => ({
+    // Get all leads with filters
     getAllLead: builder.query<
       GetConversationByIdResponse,
       {
@@ -44,16 +43,16 @@ const conversationApi = apiSlice.injectEndpoints({
         // Build query string dynamically based on provided filters
         const queryParams = new URLSearchParams();
 
-        queryParams.append('page', page.toString());
-        queryParams.append('limit', limit.toString());
+        queryParams.append("page", page.toString());
+        queryParams.append("limit", limit.toString());
 
-        if (status) queryParams.append('status', status);
-        if (source) queryParams.append('source', source);
-        if (startDate) queryParams.append('startDate', startDate);
-        if (endDate) queryParams.append('endDate', endDate);
-        if (assignedCre) queryParams.append('assignedCre', assignedCre);
+        if (status) queryParams.append("status", status);
+        if (source) queryParams.append("source", source);
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
+        if (assignedCre) queryParams.append("assignedCre", assignedCre);
         if (salesExecutive)
-          queryParams.append('salesExecutive', salesExecutive);
+          queryParams.append("salesExecutive", salesExecutive);
 
         return `/lead?${queryParams.toString()}`;
       },
@@ -61,267 +60,135 @@ const conversationApi = apiSlice.injectEndpoints({
     // Get a single lead by its ID
     getSingleLead: builder.query<Lead, string>({
       query: (id: string) => `/lead/${id}`,
-      providesTags: (result, error, id) => [{type: 'Lead', id}],
+      providesTags: (result, error, id) => [{ type: "Lead", id }],
     }),
 
-    // getAllConversations: builder.query<
+    //   getAllConversations: builder.query<
     //   GetAllConversationsResponse,
-    //   {page: number; limit: number; creId:string}
+    //   { page: number; limit: number; creId?: string }
     // >({
     //   query: ({ page, limit, creId }) => {
-    //     console.log("Fetching conversations for:", {'page':page, 'limit':limit,'creId': creId});
-    //     return {url: `/lead/conversation?page=${page}&limit=${limit}&creId=${creId}`}
-    //   },
-
-    //   // Keep cached data for 5 minutes
-    //   // keepUnusedDataFor: 300,
-    //   // Serialize query args to ensure proper caching
-    //   // serializeQueryArgs: ({endpointName}) => {
-    //   //   return endpointName;
-    //   // },
-    //   serializeQueryArgs: ({ endpointName, queryArgs }) => {
-    //     return `${endpointName}-${queryArgs.creId}`;
-    //   },
-
-    //   // Merge function to handle pagination and deduplication
-    //   // merge: (currentCache, newData, {arg}) => {
-    //   //   if (!currentCache) return newData;
-
-    //   //   // For first page, replace entire cache
-    //   //   if (arg.page === 1) {
-    //   //     return newData;
-    //   //   }
-
-    //   //   // Merge and deduplicate leads
-    //   //   return {
-    //   //     ...newData,
-    //   //     leads: [...currentCache.leads, ...newData.leads].filter(
-    //   //       (lead, index, self) =>
-    //   //         index === self.findIndex(l => l._id === lead._id),
-    //   //     ),
-    //   //   };
-    //   // },
-
-    //   merge: (currentCache, newData, { arg }) => {
-    //     if (!currentCache) return newData;
-    //     if (arg.page === 1) {
-    //       return newData;
+    //     let queryParams = `page=${page}&limit=${limit}`;
+    //     if (creId) {
+    //       queryParams += `&creId=${creId}`;
     //     }
-    //     return {
-    //       ...newData,
-    //       leads: [...currentCache.leads, ...newData.leads].filter(
-    //         (lead, index, self) =>
-    //           index === self.findIndex((l) => l._id === lead._id)
-    //       ),
-    //     };
+    //     return `/lead/conversation?${queryParams}`;
     //   },
-      
-
-    //   // Transform response to maintain consistency
-    //   transformResponse: (response: GetAllConversationsResponse) => {
-    //     return {
-    //       ...response,
-    //       leads: response.leads.sort(
-    //         (a, b) =>
-    //           new Date(b.lastMessageTime).getTime() -
-    //           new Date(a.lastMessageTime).getTime(),
-    //       ),
-    //     };
-    //   },
-
-    //   // Determine if we should refetch
-    //   forceRefetch({ currentArg, previousArg }) {
-    //     return currentArg?.page !== previousArg?.page;
-    //   },
-
-    //   // Handle real-time updates via socket
-    //   async onCacheEntryAdded(
+    //   onCacheEntryAdded: async (
     //     arg,
-    //     {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
-    //   ) {
-    //     try {
-    //       // Wait for the initial cache entry to be added
-    //       await cacheDataLoaded;
+    //     { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+    //   ) => {
+    //     await cacheDataLoaded;
 
-    //       // Socket handler for conversation updates
-    //       const handleConversationUpdate = (conversation: Conversation) => {
-    //         updateCachedData(draft => {
-    //           const index = draft.leads.findIndex(
-    //             ({_id}) => _id === conversation._id,
-    //           );
+    //     const handleConversationUpdate = (conversation: Conversation) => {
+    //       updateCachedData(draft => {
+    //         const index = draft.leads.findIndex(
+    //           ({ _id }) => _id === conversation._id
+    //         );
+    //         if (index !== -1) {
+    //           draft.leads[index] = conversation;
+    //         } else {
+    //           draft.leads.unshift(conversation);
+    //         }
+    //         draft.leads.sort(
+    //           (a, b) =>
+    //             new Date(b.lastMessageTime).getTime() -
+    //             new Date(a.lastMessageTime).getTime()
+    //         );
+    //       });
+    //     };
 
-    //           if (index !== -1) {
-    //             // Update existing conversation
-    //             draft.leads[index] = conversation;
-    //           } else {
-    //             // Add new conversation to the beginning
-    //             draft.leads.unshift(conversation);
-    //           }
-
-    //           // Maintain sorting
-    //           draft.leads.sort(
-    //             (a, b) =>
-    //               new Date(b.lastMessageTime).getTime() -
-    //               new Date(a.lastMessageTime).getTime(),
-    //           );
-    //         });
-    //       };
-
-    //       // Subscribe to socket events
-    //       socket.on('conversation', handleConversationUpdate);
-
-    //       // Cleanup on cache entry removal
-    //       await cacheEntryRemoved;
-    //       socket.off('conversation', handleConversationUpdate);
-    //     } catch (err) {
-    //       console.error('Socket error:', err);
-    //     }
+    //     socket.on('conversation', handleConversationUpdate);
+    //     await cacheEntryRemoved;
+    //     socket.off('conversation', handleConversationUpdate);
     //   },
     // }),
 
     getAllConversations: builder.query<
-    GetAllConversationsResponse,
-    { page: number; limit: number; creId?: string }
-  >({
-    query: ({ page, limit, creId }) => {
-      let queryParams = `page=${page}&limit=${limit}`;
-      if (creId) {
-        queryParams += `&creId=${creId}`;
-      }
-      return `/lead/conversation?${queryParams}`;
-    },
-    onCacheEntryAdded: async (
-      arg,
-      { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
-    ) => {
-      await cacheDataLoaded;
+      GetAllConversationsResponse,
+      { page: number; limit: number }
+    >({
+      query: ({ page, limit }) =>
+        `/lead/conversation?page=${page}&limit=${limit}`,
+      onCacheEntryAdded: async (
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) => {
+        await cacheDataLoaded;
 
-      const handleConversationUpdate = (conversation: Conversation) => {
-        updateCachedData(draft => {
-          const index = draft.leads.findIndex(
-            ({ _id }) => _id === conversation._id
-          );
-          if (index !== -1) {
-            draft.leads[index] = conversation;
-          } else {
-            draft.leads.unshift(conversation);
-          }
-          draft.leads.sort(
-            (a, b) =>
-              new Date(b.lastMessageTime).getTime() -
-              new Date(a.lastMessageTime).getTime()
-          );
-        });
-      };
+        const handleConversationUpdate = (conversation: Conversation) => {
+          updateCachedData((draft) => {
+            const index = draft.leads.findIndex(
+              ({ _id }) => _id === conversation._id
+            );
+            if (index !== -1) {
+              draft.leads[index] = conversation;
+            } else {
+              draft.leads.unshift(conversation);
+            }
+            draft.leads.sort(
+              (a, b) =>
+                new Date(b.lastMessageTime).getTime() -
+                new Date(a.lastMessageTime).getTime()
+            );
+          });
+        };
 
-      socket.on('conversation', handleConversationUpdate);
-      await cacheEntryRemoved;
-      socket.off('conversation', handleConversationUpdate);
-    },
-  }),
-
-
-
-    // Get conversation messages for a specific lead
-    // getConversationMessages: builder.query<
-    //   GetConversationMessagesResponse,
-    //   string
-    // >({
-    //   query: (id: string) => `/lead/conversation/${id}/messages/`,
-    //   onCacheEntryAdded: async (
-    //     id,
-    //     {updateCachedData, cacheDataLoaded, cacheEntryRemoved},
-    //   ) => {
-    //     await cacheDataLoaded;
-
-    //     const handleMessageUpdate = (message: Message) => {
-    //       updateCachedData(draft => {
-    //         if (
-    //           !draft.messages.find(
-    //             ({messageId}) => messageId === message.messageId,
-    //           )
-    //         ) {
-    //           draft.messages.push(message);
-    //         }
-    //       });
-    //     };
-
-    //     socket.on(`fbMessage${id}`, handleMessageUpdate);
-    //     await cacheEntryRemoved;
-    //     socket.off(`fbMessage${id}`, handleMessageUpdate);
-    //   },
-    // }),
-
+        socket.on("conversation", handleConversationUpdate);
+        await cacheEntryRemoved;
+        socket.off("conversation", handleConversationUpdate);
+      },
+    }),
 
     getConversationMessages: builder.query<
-			GetConversationMessagesResponse,
-			string
-		>({
-			query: (id: string) => `/lead/conversation/${id}/messages/`,
-			onCacheEntryAdded: async (
-				id,
-				{ updateCachedData, cacheDataLoaded, cacheEntryRemoved }
-			) => {
-				await cacheDataLoaded;
+      GetConversationMessagesResponse,
+      string
+    >({
+      query: (id: string) => `/lead/conversation/${id}/messages/`,
+      onCacheEntryAdded: async (
+        id,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) => {
+        await cacheDataLoaded;
 
-				const handleMessageUpdate = (message: Message) => {
-					updateCachedData(draft => {
-						if (
-							!draft.messages.find(
-								({ messageId }) => messageId === message.messageId
-							)
-						) {
-							draft.messages.push(message);
-						}
-					});
-				};
+        const handleMessageUpdate = (message: Message) => {
+          updateCachedData((draft) => {
+            if (
+              !draft.messages.find(
+                ({ messageId }) => messageId === message.messageId
+              )
+            ) {
+              draft.messages.push(message);
+            }
+          });
+        };
 
-				socket.on(`fbMessage${id}`, handleMessageUpdate);
-				await cacheEntryRemoved;
-				socket.off(`fbMessage${id}`, handleMessageUpdate);
-			},
-		}),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        socket.on(`fbMessage${id}`, handleMessageUpdate);
+        await cacheEntryRemoved;
+        socket.off(`fbMessage${id}`, handleMessageUpdate);
+      },
+    }),
 
     // Mark messages as seen with optimistic update
-    markAsSeen: builder.mutation<void, {id: string}>({
-      query: ({id}) => ({
+    markAsSeen: builder.mutation<void, { id: string }>({
+      query: ({ id }) => ({
         url: `/lead/conversation/${id}/mark-messages-seen`,
-        method: 'PUT',
+        method: "PUT",
       }),
       // Optimistic update: we update the cached data before the mutation is fulfilled
-      onQueryStarted: async (arg, {dispatch, queryFulfilled}) => {
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         // Optimistically update the leads cache to mark messages as seen
         const patchResult = dispatch(
           conversationApi.util.updateQueryData(
-            'getAllConversations',
-            {page: 1, limit: 500}, // Assuming you're fetching paginated data
-            draft => {
-              const lead = draft.leads.find(lead => lead._id === arg.id);
+            "getAllConversations",
+            { page: 1, limit: 500 }, // Assuming you're fetching paginated data
+            (draft) => {
+              const lead = draft.leads.find((lead) => lead._id === arg.id);
               if (lead) {
                 lead.messagesSeen = true; // Mark the messages as seen optimistically
               }
-            },
-          ),
+            }
+          )
         );
 
         try {
@@ -333,7 +200,7 @@ const conversationApi = apiSlice.injectEndpoints({
         }
       },
       // Invalidates the cache for specific lead once the mutation is successful
-      invalidatesTags: (result, error, {id}) => [{type: 'Lead', id}],
+      invalidatesTags: (result, error, { id }) => [{ type: "Lead", id }],
     }),
 
     // Send a message to a lead
@@ -341,28 +208,32 @@ const conversationApi = apiSlice.injectEndpoints({
       void,
       {
         id: string;
-        message: {messageType: string; content: {text: string}};
+        message: { messageType: string; content: { text: string } };
       }
     >({
-      query: ({id, message}) => ({
+      query: ({ id, message }) => ({
         url: `/lead/conversation/${id}/messages`,
-        method: 'POST',
-        body: {message},
+        method: "POST",
+        body: { message },
       }),
     }),
 
     // Update a lead
-    updateLeads: builder.mutation<Lead, {id: string; data: UpdateLeadPayload}>({
-      query: ({id, data}) => {
-          // Log the incoming data and ID
-    console.log('Updating lead with ID:', id);
-    console.log('Data being sent:', data);
-        return{
-        url: `/lead/${id}`,
-        method: 'PUT',
-        body: data,
-      }},
-      invalidatesTags: (result, error, {id}) => [{type: 'Lead', id}],
+    updateLeads: builder.mutation<
+      Lead,
+      { id: string; data: UpdateLeadPayload }
+    >({
+      query: ({ id, data }) => {
+        // Log the incoming data and ID
+        console.log("Updating lead with ID:", id);
+        console.log("Data being sent:", data);
+        return {
+          url: `/lead/${id}`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: (result, error, { id }) => [{ type: "Lead", id }],
     }),
   }),
   overrideExisting: false,

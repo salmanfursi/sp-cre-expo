@@ -27,7 +27,7 @@ let socket = null; // ✅ Global socket instance
 
 export const connectSocket = () => {
   if (!socket) {  // ✅ Prevent multiple connections
-    socket = io('https://crm.solutionprovider.com.bd', {
+    socket = io('http://192.168.68.130', {
       path: '/socket.io',
       reconnectionDelay: 1000,
       reconnection: true,

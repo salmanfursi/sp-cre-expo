@@ -4,8 +4,8 @@ import { checkTokenAndLogout } from './checkTokenAndLogout';
 const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-     // baseUrl: 'http://192.168.68.130/api',
-     baseUrl: 'https://crm.solutionprovider.com.bd/api',
+    baseUrl:'http://192.168.68.130/api',
+    //  baseUrl: 'https://crm.solutionprovider.com.bd/api',
     prepareHeaders: (headers, { getState }) => {
       // Get token from auth state
       const token = (getState() as RootState).auth.token;
