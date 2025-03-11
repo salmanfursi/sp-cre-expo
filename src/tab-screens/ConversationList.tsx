@@ -49,7 +49,7 @@ const ConversationList = () => {
 
     const applyFilters = () => {
       let updatedList = [...data.leads];
-
+// console.log('updatedList',updatedList[0].messagesSeen);
       if (filters.statuses.length > 0) {
         updatedList = updatedList.filter((item) => filters.statuses.includes(item.status));
       }
@@ -60,6 +60,10 @@ const ConversationList = () => {
 
       if (filters.pages.length > 0) {
         updatedList = updatedList.filter((item) => filters.pages.includes(item.pageInfo?.pageId));
+      }
+
+      if (filters.messagesSeen !== null) {
+        updatedList = updatedList.filter((item) => item.messagesSeen === filters.messagesSeen);
       }
 
       setFilteredConversations(updatedList);
@@ -90,7 +94,7 @@ const ConversationList = () => {
       </View>
     );
   }
-  
+
 // console.log('filters---->',data.leads[0].messagesSeen)
    return (
     <Provider>

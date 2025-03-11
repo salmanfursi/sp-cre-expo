@@ -13,9 +13,6 @@ const ConversationFilter = ({data, setFilters, filters, availableFilters }) => {
     pages: [],
   });
 
-  // console.log('filters---->',data.leads[0].messagesSeen)
-  console.log('ConversationFilter unseen seen---->',data.leads[0].messagesSeen)
-
 
   const { user } = useSelector((state: RootState) => state.auth);
   const { data: department } = useGetDepartmentByIdQuery(user?.departmentId, {
@@ -122,6 +119,9 @@ const ConversationFilter = ({data, setFilters, filters, availableFilters }) => {
             </Text>
           </TouchableOpacity>
         </View>
+
+ 
+
 
         {/* Filter Dropdown Toggle */}
         <TouchableOpacity
