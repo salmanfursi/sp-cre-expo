@@ -114,11 +114,11 @@ const MessageItem = ({ message }) => {
     <View
       style={{
         maxWidth: "75%",
-        padding: 10,
+        padding: 6,
         marginVertical: 4,
-        borderRadius: 8,
+        borderRadius: 10,
         alignSelf: message.sentByMe ? "flex-end" : "flex-start",
-        backgroundColor: message.sentByMe ? "#DCF8C6" : "#FFFFFF",
+        backgroundColor: message.sentByMe ? "#79adc1" : "#FFFFFF",
       }}
     >
       {/* Render Media Messages */}
@@ -182,8 +182,8 @@ const MessageItem = ({ message }) => {
                 <Image
                   source={{ uri: url }}
                   style={{
-                    width: 100,
-                    height: 100,
+                    width: 150,
+                    height: 150,
                     borderRadius: 8,
                   }}
                 />
@@ -222,7 +222,7 @@ const MessageItem = ({ message }) => {
         })
       ) : (
         // Render Text Message
-        <Text style={{ fontSize: 16, color: "#333" }}>
+        <Text style={{ fontSize: 16, color: "#000" }}>
           {message.content || "👍"}
         </Text>
       )}

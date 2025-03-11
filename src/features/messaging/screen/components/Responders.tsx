@@ -337,11 +337,11 @@ console.log('handleSendFileMessage images',response);
 
       <View className="flex-row items-center bg-white p-2 rounded-full border border-gray-300">
         <TouchableOpacity onPress={handleAttachFile} disabled={isUploading}>
-          <Icon name="attach-file" size={24} color={isUploading ? "gray" : "#06b6d4"} />
+          <Icon name="attach-file" size={24} color={isUploading ? "gray" : "#177591"} />
         </TouchableOpacity>
 
         <TextInput
-          className="flex-1 px-3 py-2 text-gray-700"
+          className="flex-1 px-3 text-gray-700"
           placeholder="Type a message..."
           value={message}
           onChangeText={setMessage}
@@ -353,9 +353,9 @@ console.log('handleSendFileMessage images',response);
           disabled={isLoading || isUploading}
         >
           {isLoading || isUploading ? (
-            <ActivityIndicator size="small" color="#06b6d4" />
+            <ActivityIndicator size="small" color="#177591" />
           ) : (
-            <Icon name="send" size={24} color="#06b6d4" />
+            <Icon name="send" size={24} color="#177591" />
           )}
         </TouchableOpacity>
       </View>

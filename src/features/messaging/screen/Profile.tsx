@@ -1,4 +1,3 @@
-
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import useAuth from "../../../hooks/useAuth";
@@ -7,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const { user, loading } = useAuth();
-const navigation=useNavigation()
+  const navigation = useNavigation();
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -21,10 +20,12 @@ const navigation=useNavigation()
     <ScrollView className="flex-1 bg-gray-100">
       {/* Cover Photo */}
       <View className="relative">
-  {user && <Image
-    source={{ uri: user?.coverPhoto }}
-    className="w-full h-40 object-cover"
-  />}
+        {user && (
+          <Image
+            source={{ uri: user?.coverPhoto }}
+            className="w-full h-40 object-cover"
+          />
+        )}
         {/* Profile Picture */}
         <View className="absolute left-4 bottom-[-30] rounded-full overflow-hidden border-4 border-white">
           <Image
@@ -33,11 +34,12 @@ const navigation=useNavigation()
           />
         </View>
         <TouchableOpacity
-        onPress={()=>{
-            navigation.goBack()
-        }}
-        className="absolute left-2 top-2 rounded-md overflow-hidden border-4 border-cyan-800 bg-cyan-700">
-          <Icon name="arrowleft" size={30} color="#fff" />;
+          onPress={() => {
+            navigation.goBack();
+          }}
+          className="absolute left-2 top-2 rounded-md overflow-hidden border-4 border-cyan-800 bg-cyan-700"
+        >
+          <Icon name="arrowleft" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
 

@@ -21,6 +21,7 @@ import InfoSidebar from "./components/infobar.tsx/InfoSidebar";
 import { StatusBar } from "expo-status-bar";
 import Responders from "./components/Responders";
 import MessageItem from "./components/MessageItem";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Inbox() {
   const bottomSheetRef = useRef(null);
@@ -112,7 +113,7 @@ export default function Inbox() {
         >
           <StatusBar style="auto" />
           <View className="flex-1 bg-gray-200">
-            <View className="bg-blue-400 p-2 flex-row justify-between">
+            <View className="bg-cyan-600 p-2 flex-row justify-between">
               <View className="flex-row gap-2 items-center">
                 <Text
                   onPress={() => navigation.goBack()}
@@ -120,10 +121,11 @@ export default function Inbox() {
                 >
                   <Icon name="arrow-back" size={24} />
                 </Text>
-                <Image
-                  source={require("../../../assets/836.jpg")}
+                {/* <Image
+                      source={{ uri: dynamicImageUrl }}
+
                   className="rounded-full h-10 w-10"
-                />
+                /> */}
                 <View className="flex-col item-center">
                   <Text
                     className="font-bold text-lg text-white"

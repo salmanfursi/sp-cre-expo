@@ -30,7 +30,12 @@ const ConversationList = () => {
   const creId = user?._id;
 
   const [menuVisible, setMenuVisible] = useState(false);
-  const [filters, setFilters] = useState({ statuses: [], creNames: [], pages: [] });
+  const [filters, setFilters] = useState({
+    statuses: [],
+    creNames: [],
+    pages: [],
+    messagesSeen: null,
+  });
   const [filteredConversations, setFilteredConversations] = useState([]);
 
   const { data, error, isLoading, refetch } = useGetAllConversationsQuery({
@@ -38,8 +43,6 @@ const ConversationList = () => {
     limit: 500,
     creId,
   });
-
-  
 
   const [markAsSeen] = useMarkAsSeenMutation();
 
@@ -49,21 +52,29 @@ const ConversationList = () => {
 
     const applyFilters = () => {
       let updatedList = [...data.leads];
-// console.log('updatedList',updatedList[0].messagesSeen);
+      // console.log('updatedList',updatedList[0].messagesSeen);
       if (filters.statuses.length > 0) {
-        updatedList = updatedList.filter((item) => filters.statuses.includes(item.status));
+        updatedList = updatedList.filter((item) =>
+          filters.statuses.includes(item.status)
+        );
       }
 
       if (filters.creNames.length > 0) {
-        updatedList = updatedList.filter((item) => filters.creNames.includes(item.creName?._id));
+        updatedList = updatedList.filter((item) =>
+          filters.creNames.includes(item.creName?._id)
+        );
       }
 
       if (filters.pages.length > 0) {
-        updatedList = updatedList.filter((item) => filters.pages.includes(item.pageInfo?.pageId));
+        updatedList = updatedList.filter((item) =>
+          filters.pages.includes(item.pageInfo?.pageId)
+        );
       }
 
       if (filters.messagesSeen !== null) {
-        updatedList = updatedList.filter((item) => item.messagesSeen === filters.messagesSeen);
+        updatedList = updatedList.filter(
+          (item) => item.messagesSeen === filters.messagesSeen
+        );
       }
 
       setFilteredConversations(updatedList);
@@ -85,37 +96,75 @@ const ConversationList = () => {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <Text className="text-lg font-bold text-gray-600 px-6">
-          {error ? "Failed to load conversations. Please check your connection." : "Loading conversations..."}
+          {error
+            ? "Failed to load conversations. Please check your connection."
+            : "Loading conversations..."}
         </Text>
         <ActivityIndicator size="large" color="#0000ff" />
-        <TouchableOpacity onPress={refetch} className="mt-4 p-2 px-4 rounded bg-primary">
+        <TouchableOpacity
+          onPress={refetch}
+          className="mt-4 p-2 px-4 rounded bg-primary"
+        >
           <Text className="text-md font-bold text-white">Reload</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-// console.log('filters---->',data.leads[0].messagesSeen)
-   return (
+  // console.log('filters---->',data.leads[0].messagesSeen)
+  return (
     <Provider>
-      <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 bg-white">
         <StatusBar style="auto" />
 
         {/* Header */}
         <View className="bg-cyan-600 px-4 py-1 flex-row items-center justify-between">
-          <Text className="text-lg font-bold text-white mr-2">Conversations</Text>
-          <Menu visible={menuVisible} onDismiss={() => setMenuVisible(false)} anchor={
-            <TouchableOpacity onPress={() => setMenuVisible(true)}>
-              {user && <Avatar.Image size={50} source={{ uri: user?.profilePicture || "https://via.placeholder.com/35" }} />}
-            </TouchableOpacity>
-          }>
-            <Menu.Item onPress={() => navigation.navigate("profile")} title="Profile" leadingIcon={() => <Icon name="account-circle-outline" size={20} color="black" />} />
-            <Menu.Item onPress={handleLogout} title="Logout" leadingIcon={() => <Icon name="logout" size={20} color="red" />} />
+          <Text className="text-lg font-bold text-white mr-2">
+            Conversations
+          </Text>
+          <Menu
+            visible={menuVisible}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={
+              <TouchableOpacity onPress={() => setMenuVisible(true)}>
+                {user && (
+                  <Avatar.Image
+                    size={50}
+                    source={{
+                      uri:
+                        user?.profilePicture ||
+                        "https://via.placeholder.com/35",
+                    }}
+                  />
+                )}
+              </TouchableOpacity>
+            }
+          >
+            <Menu.Item
+              onPress={() => {
+                setMenuVisible(false);
+                navigation.navigate("profile");
+              }}
+              title="Profile"
+              leadingIcon={() => (
+                <Icon name="account-circle-outline" size={20} color="black" />
+              )}
+            />
+            <Menu.Item
+              onPress={handleLogout}
+              title="Logout"
+              leadingIcon={() => <Icon name="logout" size={20} color="red" />}
+            />
           </Menu>
         </View>
 
         {/* Filter Component */}
-        <ConversationFilter availableFilters={data.filters} setFilters={setFilters} filters={filters} data={data} />
+        <ConversationFilter
+          availableFilters={data.filters}
+          setFilters={setFilters}
+          filters={filters}
+          data={data}
+        />
 
         {/* ✅ Pass Filtered Data to FlatList */}
         <FlatList
@@ -124,11 +173,13 @@ const ConversationList = () => {
           renderItem={({ item }) => (
             <ConversationItem
               item={item}
-              handleSelectConversation={() => handleSelectConversation(item._id)}
+              handleSelectConversation={() =>
+                handleSelectConversation(item._id)
+              }
             />
           )}
         />
-      </SafeAreaView>
+      </View>
     </Provider>
   );
 };
