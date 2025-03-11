@@ -313,7 +313,7 @@ console.log('uploadfile log',response?.fileUrl);
       }).unwrap();
 console.log('handleSendFileMessage images',response);
       setMessages((prev) => [...prev, { ...response, local: true }]); // Add to UI instantly
-      Alert.alert("Success", "File sent successfully");
+      // Alert.alert("Success", "File sent successfully");
     } catch (error) {
       console.error("Failed to send file message:", error);
       showErrorToast("Failed to send file message.");

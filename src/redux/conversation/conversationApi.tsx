@@ -169,6 +169,11 @@ const conversationApi = apiSlice.injectEndpoints({
       },
     }),
 
+    getDepartmentById: builder.query({
+			query: id => `/users/departments/${id}`,
+		}),
+
+
     // Mark messages as seen with optimistic update
     markAsSeen: builder.mutation<void, { id: string }>({
       query: ({ id }) => ({
@@ -202,7 +207,7 @@ const conversationApi = apiSlice.injectEndpoints({
       // Invalidates the cache for specific lead once the mutation is successful
       invalidatesTags: (result, error, { id }) => [{ type: "Lead", id }],
     }),
-
+ 
     // Send a message to a lead
     sentMessage: builder.mutation<
       void,
@@ -248,6 +253,7 @@ export const {
   useSentMessageMutation,
   useMarkAsSeenMutation,
   useGetAllLeadQuery,
+  useGetDepartmentByIdQuery
 } = conversationApi;
 
 export default conversationApi;

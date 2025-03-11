@@ -41,11 +41,11 @@ const RootNavigator = () => {
     checkAuth();
   }, [dispatch]);
 
-  if (loading) {
-    return null;  
-  }
+  // if (loading) {
+  //   return null;  
+  // }
 
-  if (!showWelcome) {
+  if (showWelcome) {
     return <Welcome onVerify={() => setShowWelcome(false)} />;
   }
  
